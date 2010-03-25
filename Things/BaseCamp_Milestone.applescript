@@ -1,7 +1,12 @@
 (*
 Add Milestone from BaseCamp
 
+http://github.com/ivanvc/applescripts/tree/master/Things
 iv@nvald.es
+
+With contribution of: 
+idPro
+http://culturedcode.com/things/wiki/index.php/User:Idpro
 
 It will add a new To Do based on a Milestone sent from a Basecamp. It will try to find the Things project named as the Basecamp project, and the Things Area as the Basecamp company. If it finds the project, it will add the To Do, to that project. If not, it will try to find the Area (Company), and will add to it. If not, it will add the To Do to the Inbox.
 *)
@@ -38,25 +43,28 @@ using terms from application "Mail"
 					set added to false
 					
 					try
-						set newToDo to make new to do Â
-							with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")", due date:date theDate} Â
+						set newToDo to make new to do ¬
+							with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")", due date:date theDate} ¬
 							at beginning of project theProject
+						set tag names of newToDo to theProject & "," & theArea
 						set addedToProject to true
 					end try
 					
 					if not addedToProject then
 						try
-							set newToDo to make new to do Â
-								with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")", due date:date theDate} Â
+							set newToDo to make new to do ¬
+								with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")", due date:date theDate} ¬
 								at beginning of area theArea
+							set tag names of newToDo to theProject & "," & theArea
 							set addedToArea to true
 						end try
 					end if
 					
 					if not addedToArea and not addedToProject then
 						try
-							set newToDo to make new to do Â
+							set newToDo to make new to do ¬
 								with properties {name:theProject & ": " & theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")", due date:date theDate}
+							set tag names of newToDo to theProject & "," & theArea
 							set added to true
 						end try
 					end if
@@ -78,29 +86,29 @@ using terms from application "Mail"
 				
 				
 				tell application "GrowlHelperApp"
-					set the allNotificationsList to Â
+					set the allNotificationsList to ¬
 						{"Added To Do", "Added Project"}
-					set the enabledNotificationsList to Â
+					set the enabledNotificationsList to ¬
 						{"Added To Do", "Added Project"}
-					register as application Â
-						"ThingsBaseCamp" all notifications allNotificationsList Â
-						default notifications enabledNotificationsList Â
+					register as application ¬
+						"ThingsBaseCamp" all notifications allNotificationsList ¬
+						default notifications enabledNotificationsList ¬
 						icon of application "Things"
 					
 					if addedToArea then
-						notify with name Â
-							"Added To Do" title Â
-							"New To Do" description Â
+						notify with name ¬
+							"Added To Do" title ¬
+							"New To Do" description ¬
 							"Added new To Do to Area " & theArea application name "ThingsBaseCamp"
 					else if addedToProject then
-						notify with name Â
-							"Added To Do" title Â
-							"New To Do" description Â
+						notify with name ¬
+							"Added To Do" title ¬
+							"New To Do" description ¬
 							"Added new To Do to Project " & theProject application name "ThingsBaseCamp"
 					else if added then
-						notify with name Â
-							"Added To Do" title Â
-							"New To Do" description Â
+						notify with name ¬
+							"Added To Do" title ¬
+							"New To Do" description ¬
 							"Added new To Do to Inbox" application name "ThingsBaseCamp"
 					end if
 				end tell
