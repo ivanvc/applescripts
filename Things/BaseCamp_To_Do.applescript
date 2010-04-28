@@ -45,8 +45,8 @@ using terms from application "Mail"
 					set added to false
 					
 					try
-						set newToDo to make new to do ¬
-							with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} ¬
+						set newToDo to make new to do Â
+							with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} Â
 							at beginning of project theProject
 						set tag names of newToDo to theProject & "," & theArea
 						set addedToProject to true
@@ -54,8 +54,8 @@ using terms from application "Mail"
 					
 					if not addedToProject then
 						try
-							set newToDo to make new to do ¬
-								with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} ¬
+							set newToDo to make new to do Â
+								with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} Â
 								at beginning of area theArea
 							set tag names of newToDo to theProject & "," & theArea
 							set addedToArea to true
@@ -65,7 +65,7 @@ using terms from application "Mail"
 					if not addedToArea and not addedToProject then
 						
 						try
-							set newToDo to make new to do ¬
+							set newToDo to make new to do Â
 								with properties {name:theProject & ": " & theToDo, notes:"added by " & theSender & " (" & theArea & ")"}
 							set tag names of newToDo to theProject & "," & theArea
 							set added to true
@@ -89,29 +89,29 @@ using terms from application "Mail"
 				
 				
 				tell application "GrowlHelperApp"
-					set the allNotificationsList to ¬
+					set the allNotificationsList to Â
 						{"Added To Do", "Added Project"}
-					set the enabledNotificationsList to ¬
+					set the enabledNotificationsList to Â
 						{"Added To Do", "Added Project"}
-					register as application ¬
-						"ThingsBaseCamp" all notifications allNotificationsList ¬
-						default notifications enabledNotificationsList ¬
+					register as application Â
+						"ThingsBaseCamp" all notifications allNotificationsList Â
+						default notifications enabledNotificationsList Â
 						icon of application "Things"
 					
 					if addedToArea then
-						notify with name ¬
-							"Added To Do" title ¬
-							"New To Do" description ¬
+						notify with name Â
+							"Added To Do" title Â
+							"New To Do" description Â
 							"Added new To Do to Area " & theArea application name "ThingsBaseCamp"
 					else if addedToProject then
-						notify with name ¬
-							"Added To Do" title ¬
-							"New To Do" description ¬
+						notify with name Â
+							"Added To Do" title Â
+							"New To Do" description Â
 							"Added new To Do to Project " & theProject application name "ThingsBaseCamp"
 					else if added then
-						notify with name ¬
-							"Added To Do" title ¬
-							"New To Do" description ¬
+						notify with name Â
+							"Added To Do" title Â
+							"New To Do" description Â
 							"Added new To Do to Inbox" application name "ThingsBaseCamp"
 					end if
 				end tell
