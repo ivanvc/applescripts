@@ -14,30 +14,18 @@ NOTE: At the moment it is reading the html format of the email, it can be enhanc
 *)
 
 using terms from application "Mail"
+	-- Disable the following line to debug
 	on perform mail action with messages newMessages
 		tell application "Mail"
-			--	set newMessages to selection
+			-- Enable the following line to debug
+			--set newMessages to selection
 			repeat with theMessage in newMessages
-				set theContent to content of theMessage
-				set theText to paragraphs of theContent
-				set counter to 0
+				set theSource to source of theMessage
+				set theArea to (do shell script "/bin/echo " & quoted form of theSource & " | /usr/bin/ruby -ne 'print $1 if $_[/^Company:\\s(.*)$/]' ")
+				set theProject to (do shell script "/bin/echo " & quoted form of theSource & " | /usr/bin/ruby -ne 'print $1 if $_[/^Project:\\s(.*)$/]' ")
+				set theToDo to (do shell script "/bin/echo " & quoted form of theSource & " | /usr/bin/ruby -ne 'print $1 if $_[/^\\s{2}\\*\\s(.*)$/]' ")
+				set theURL to (do shell script "/bin/echo " & quoted form of theSource & " | /usr/bin/ruby -ne 'puts $_ if $_[/http/]'")
 				set theSender to (extract name from sender of theMessage)
-				repeat with theLine in theText
-					if length of theLine is greater than 0 then
-						display alert "test alert" message "Line " & counter & ": " & theLine as warning
-						if counter is 5 then
-							set theArea to theLine
-						else if counter is 3 then
-							set theProject to theLine
-						else if counter is 8 then
-							set theToDo to theLine
-							-- Cannot set theURL right now :(
-							--						else if counter is 12 then
-							--							set theURL to theLine
-						end if
-					end if
-					set counter to counter + 1
-				end repeat
 				
 				tell application "Things"
 					set addedToProject to false
@@ -46,7 +34,7 @@ using terms from application "Mail"
 					
 					try
 						set newToDo to make new to do Â
-							with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} Â
+							with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")"} Â
 							at beginning of project theProject
 						set tag names of newToDo to theProject & "," & theArea
 						set addedToProject to true
@@ -55,7 +43,7 @@ using terms from application "Mail"
 					if not addedToProject then
 						try
 							set newToDo to make new to do Â
-								with properties {name:theToDo, notes:"added by " & theSender & " (" & theArea & ")"} Â
+								with properties {name:theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")"} Â
 								at beginning of area theArea
 							set tag names of newToDo to theProject & "," & theArea
 							set addedToArea to true
@@ -66,7 +54,7 @@ using terms from application "Mail"
 						
 						try
 							set newToDo to make new to do Â
-								with properties {name:theProject & ": " & theToDo, notes:"added by " & theSender & " (" & theArea & ")"}
+								with properties {name:theProject & ": " & theToDo, notes:theURL & linefeed & "added by " & theSender & " (" & theArea & ")"}
 							set tag names of newToDo to theProject & "," & theArea
 							set added to true
 						end try
