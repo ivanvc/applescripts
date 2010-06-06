@@ -14,9 +14,11 @@ NOTE: At the moment it is reading the html format of the email, it can be enhanc
 *)
 
 using terms from application "Mail"
-	--on perform mail action with messages newMessages
+	-- Disable the following line to debug
+	on perform mail action with messages newMessages
 	tell application "Mail"
-		set newMessages to selection
+			-- Enable the following line to debug
+			--set newMessages to selection
 		repeat with theMessage in newMessages
 			set theSource to source of theMessage
 			set theArea to (do shell script "/bin/echo " & quoted form of theSource & " | /usr/bin/ruby -ne 'print $1 if $_[/^Company:\\s(.*)$/]' ")
@@ -108,5 +110,5 @@ using terms from application "Mail"
 		end repeat
 	end tell
 	
-	--end perform mail action with messages
+	end perform mail action with messages
 end using terms from
